@@ -21,16 +21,27 @@
         claude-desktop = pkgs.callPackage ./pkgs/claude-desktop.nix {
           inherit patchy-cnb;
         };
-        claude-desktop-with-fhs = pkgs.buildFHSEnv {
-          name = "claude-desktop";
-          targetPkgs = pkgs: with pkgs; [
-            docker
-            glibc
-            openssl
-            nodejs
-            uv
+        claude-desktop-with-fhs = pkgs.symlinkJoin {
+          name = "claude-desktop-with-fhs";
+          paths = [
+            (pkgs.buildFHSUserEnv {
+              name = "claude-desktop-fhs";
+              targetPkgs = pkgs: with pkgs; [
+                self.packages.${system}.claude-desktop
+                docker
+                glibc
+                openssl
+                nodejs
+                uv
+              ];
+              runScript = "claude-desktop";
+            })
+            self.packages.${system}.claude-desktop
           ];
-          runScript = "${claude-desktop}/bin/claude-desktop";
+          postBuild = ''
+            rm -f $out/bin/claude-desktop
+            ln -s $out/bin/claude-desktop-fhs $out/bin/claude-desktop
+          '';
         };
         default = claude-desktop;
       };
