@@ -22,7 +22,7 @@
           inherit patchy-cnb;
         };
         claude-desktop-with-fhs = pkgs.buildFHSEnv {
-          name = "claude-desktop-with-fhs";
+          name = "claude-desktop";
           targetPkgs = pkgs: with pkgs; [
             self.packages.${system}.claude-desktop
             docker
@@ -34,6 +34,6 @@
           runScript = "claude-desktop";
         };
         default = claude-desktop;
-        };
-      });
+      };
+    });
 }
