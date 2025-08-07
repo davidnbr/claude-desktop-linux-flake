@@ -24,7 +24,7 @@
         claude-desktop-with-fhs = pkgs.symlinkJoin {
           name = "claude-desktop-with-fhs";
           paths = [
-            (pkgs.buildFHSUserEnv {
+            (pkgs.buildFHSEnv {
               name = "claude-desktop-fhs";
               targetPkgs = pkgs: with pkgs; [
                 self.packages.${system}.claude-desktop
