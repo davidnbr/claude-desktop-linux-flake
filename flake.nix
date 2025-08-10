@@ -24,14 +24,13 @@
         claude-desktop-with-fhs = pkgs.buildFHSEnv {
           name = "claude-desktop";
           targetPkgs = pkgs: with pkgs; [
-            self.packages.${system}.claude-desktop
             docker
             glibc
             openssl
             nodejs
             uv
           ];
-          runScript = "claude-desktop";
+          runScript = "${claude-desktop}/bin/claude-desktop";
         };
         default = claude-desktop;
       };
