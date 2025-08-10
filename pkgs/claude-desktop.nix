@@ -164,7 +164,7 @@ in
 
       # Install .desktop file
       mkdir -p $out/share/applications
-      install -Dm0644 {${desktopItem},$out}/share/applications/$pname.desktop
+      install -Dm0644 ${desktopItem}/share/applications/*.desktop -t $out/share/applications
 
       # Create wrapper
       mkdir -p $out/bin
