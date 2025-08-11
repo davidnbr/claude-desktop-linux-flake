@@ -37,7 +37,7 @@ in
     desktopItem = makeDesktopItem {
       name = "claude-desktop";
       exec = "claude-desktop %u";
-      icon = "claude";
+      icon = "claude-desktop";
       type = "Application";
       terminal = false;
       desktopName = "Claude";
@@ -164,7 +164,7 @@ in
 
       # Install .desktop file
       mkdir -p $out/share/applications
-      install -Dm0644 ${desktopItem}/share/applications/*.desktop -t $out/share/applications
+      install -Dm0644 {${desktopItem},$out}/share/applications/$pname.desktop
 
       # Create wrapper
       mkdir -p $out/bin
