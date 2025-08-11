@@ -37,7 +37,7 @@
                 nodejs
                 uv
               ];
-              runScript = "${self.packages.${system}.claude-desktop}/bin/claude-desktop";
+              runScript = "claude-desktop";
             };
             desktopFile = pkgs.makeDesktopItem {
               name = "claude-desktop-fhs";
@@ -56,7 +56,7 @@
             ln -s ${desktopFile}/share/applications/claude-desktop-fhs.desktop $out/share/applications/claude-desktop-fhs.desktop
 
             mkdir -p $out/bin
-            makeWrapper ${fhsPackage}/bin/claude-desktop $out/bin/claude-desktop-fhs \
+            makeWrapper ${self.packages.${system}.claude-desktop}/bin/claude-desktop $out/bin/claude-desktop-fhs \
               --prefix XDG_DATA_DIRS : "$out/share:${self.packages.${system}.claude-desktop}/share"
           '';
 
