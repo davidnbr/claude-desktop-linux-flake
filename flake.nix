@@ -44,6 +44,7 @@
                     ]
                   ))
                   pkgs.git
+                  pkgs.xdg-utils
                 ];
 
                 profile = ''
