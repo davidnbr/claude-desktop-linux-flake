@@ -40,11 +40,9 @@
                     ps: with ps; [
                       pip
                       httpx
-                      (ps.mcp.overridePythonAttrs (old: {
-                        propagatedBuildInputs = builtins.filter (dep: dep.pname or "" != "tkinter") (
-                          old.propagatedBuildInputs or [ ]
-                        );
-                      }))
+                      (ps.mcp.override {
+                        optional-dependencies = { };
+                      })
                     ]
                   ))
                   pkgs.git
