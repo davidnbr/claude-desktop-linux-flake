@@ -36,7 +36,7 @@
                   pkgs.openssl
                   pkgs.nodejs
                   pkgs.uv
-                  (pkgs.python3.withPackages (
+                  (pkgs.python313.withPackages (
                     ps: with ps; [
                       pip
                       httpx
