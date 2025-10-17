@@ -40,9 +40,6 @@
                     ps: with ps; [
                       pip
                       httpx
-                      (ps.mcp.override {
-                        optional-dependencies = { };
-                      })
                     ]
                   ))
                   pkgs.git
