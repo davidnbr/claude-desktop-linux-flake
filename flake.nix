@@ -40,6 +40,7 @@
                     ps: with ps; [
                       pip
                       httpx
+                      mcp
                     ]
                   ))
                   pkgs.git
