@@ -18,7 +18,6 @@
         pkgs = import nixpkgs {
           inherit system;
           config.allowUnfree = true;
-          config.allowBroken = true;
         };
       in
       {
@@ -41,7 +40,11 @@
                     ps: with ps; [
                       pip
                       httpx
-                      mcp
+                      (ps.mcp.overridePythonAttrs (old: {
+                        propagatedBuildInputs = builtins.filter (dep: dep.pname or "" != "tkinter") (
+                          old.propagatedBuildInputs or [ ]
+                        );
+                      }))
                     ]
                   ))
                   pkgs.git
