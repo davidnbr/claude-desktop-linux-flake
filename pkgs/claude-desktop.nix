@@ -1,21 +1,43 @@
-{ lib, stdenvNoCC, fetchurl, electron, p7zip, icoutils, nodePackages
-, imagemagick, makeDesktopItem, makeWrapper, patchy-cnb, perl }:
+{
+  lib,
+  stdenvNoCC,
+  fetchurl,
+  electron,
+  p7zip,
+  icoutils,
+  nodePackages,
+  imagemagick,
+  makeDesktopItem,
+  makeWrapper,
+  patchy-cnb,
+  perl,
+  xdg-utils,
+  libcanberra-gtk3,
+  mesa,
+  libGL,
+}:
 let
   pname = "claude-desktop";
   version = "0.12.112";
   srcExe = fetchurl {
     # NOTE: `?v=0.10.0` doesn't actually request a specific version. It's only being used here as a cache buster.
-    url =
-      "https://storage.googleapis.com/osprey-downloads-c02f6a0d-347c-492b-a752-3e0651722e97/nest-win-x64/Claude-Setup-x64.exe?v=${version}";
+    url = "https://storage.googleapis.com/osprey-downloads-c02f6a0d-347c-492b-a752-3e0651722e97/nest-win-x64/Claude-Setup-x64.exe?v=${version}";
     hash = "sha256-DwCgTSBpK28sRCBUBBatPsaBZQ+yyLrJbAriSkf1f8E=";
   };
-in stdenvNoCC.mkDerivation rec {
+in
+stdenvNoCC.mkDerivation rec {
   inherit pname version;
 
   src = ./.;
 
-  nativeBuildInputs =
-    [ p7zip nodePackages.asar makeWrapper imagemagick icoutils perl ];
+  nativeBuildInputs = [
+    p7zip
+    nodePackages.asar
+    makeWrapper
+    imagemagick
+    icoutils
+    perl
+  ];
 
   desktopItem = makeDesktopItem {
     name = "claude-desktop";
@@ -25,7 +47,10 @@ in stdenvNoCC.mkDerivation rec {
     terminal = false;
     desktopName = "Claude";
     genericName = "Claude Desktop";
-    categories = [ "Office" "Utility" ];
+    categories = [
+      "Office"
+      "Utility"
+    ];
     mimeTypes = [ "x-scheme-handler/claude" ];
   };
 
@@ -140,29 +165,37 @@ in stdenvNoCC.mkDerivation rec {
   '';
 
   installPhase = ''
-    runHook preInstall
+      runHook preInstall
 
-    # Electron directory structure
-    mkdir -p $out/lib/$pname
-    cp -r $TMPDIR/build/electron-app/app.asar $out/lib/$pname/
-    cp -r $TMPDIR/build/electron-app/app.asar.unpacked $out/lib/$pname/
+      # Electron directory structure
+      mkdir -p $out/lib/$pname
+      cp -r $TMPDIR/build/electron-app/app.asar $out/lib/$pname/
+      cp -r $TMPDIR/build/electron-app/app.asar.unpacked $out/lib/$pname/
 
-    # Install icons
-    mkdir -p $out/share/icons
-    cp -r $TMPDIR/build/icons/* $out/share/icons
+      # Install icons
+      mkdir -p $out/share/icons
+      cp -r $TMPDIR/build/icons/* $out/share/icons
 
-    # Install .desktop file
-    mkdir -p $out/share/applications
-    install -Dm0644 {${desktopItem},$out}/share/applications/$pname.desktop
+      # Install .desktop file
+      mkdir -p $out/share/applications
+      install -Dm0644 {${desktopItem},$out}/share/applications/$pname.desktop
 
-    # Create wrapper
-    mkdir -p $out/bin
-    makeWrapper ${electron}/bin/electron $out/bin/$pname \
-      --add-flags "$out/lib/$pname/app.asar" \
-      --add-flags "--openDevTools" \
-      --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}"
-
-    runHook postInstall
+      # Create wrapper
+      mkdir -p $out/bin
+      makeWrapper ${electron}/bin/electron $out/bin/$pname \
+    --add-flags "$out/lib/$pname/app.asar" \
+    --add-flags "--openDevTools" \
+    --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}" \
+    --prefix PATH : ${lib.makeBinPath [ xdg-utils ]} \
+    --prefix LD_LIBRARY_PATH : ${
+      lib.makeLibraryPath [
+        mesa
+        libGL
+        libcanberra-gtk3
+      ]
+    } \
+    --set GTK_PATH ${libcanberra-gtk3}/lib/gtk-3.0
+      runHook postInstall
   '';
 
   dontUnpack = true;

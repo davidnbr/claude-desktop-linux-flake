@@ -44,6 +44,7 @@
                     ]
                   ))
                   pkgs.git
+                  pkgs.xdg-utils
                 ];
 
                 profile = ''
@@ -62,7 +63,7 @@
                   python-preference = "system"
                   python-downloads = "never"
                   link-mode = "copy"
-                  cache-dir = "~/.cache/uv"
+                  cache-dir = "$HOME/.cache/uv"
                   EOF
                                   fi
 
