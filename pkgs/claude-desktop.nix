@@ -186,6 +186,14 @@ stdenvNoCC.mkDerivation rec {
     --add-flags "$out/lib/$pname/app.asar" \
     --add-flags "--openDevTools" \
     --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}" \
+    --add-flags "--disable-gpu-sandbox" \
+    --add-flags "--enable-gpu-rasterization" \
+    --add-flags "--enable-zero-copy" \
+    --add-flags "--ignore-gpu-blocklist" \
+    --add-flags "--enable-accelerated-video-decode" \
+    --add-flags "--disable-features=UseChromeOSDirectVideoDecoder" \
+    --add-flags "--force-device-scale-factor=1" \
+    --add-flags "--high-dpi-support=1" \
     --prefix PATH : ${lib.makeBinPath [ xdg-utils ]} \
     --prefix LD_LIBRARY_PATH : ${
       lib.makeLibraryPath [
@@ -194,7 +202,11 @@ stdenvNoCC.mkDerivation rec {
         libcanberra-gtk3
       ]
     } \
-    --set GTK_PATH ${libcanberra-gtk3}/lib/gtk-3.0
+    --set GTK_PATH ${libcanberra-gtk3}/lib/gtk-3.0 \
+    --set ELECTRON_OZONE_PLATFORM_HINT auto \
+    --set ELECTRON_ENABLE_LOGGING 1 \
+    --set GDK_BACKEND x11,wayland \
+    --set QT_QPA_PLATFORM xcb
       runHook postInstall
   '';
 
