@@ -18,6 +18,14 @@
 }:
 let
   pname = "claude-desktop";
+  # To update to a new version:
+  # 1. Update the version number below
+  # 2. Update the hash with the new SHA256 (or set to an empty string and let Nix calculate it)
+  # 3. Run: nix build .#claude-desktop --impure
+  # 4. If hash is wrong, Nix will show the correct hash - update it here
+  #
+  # Version history: Check https://storage.googleapis.com/osprey-downloads-c02f6a0d-347c-492b-a752-3e0651722e97/nest-win-x64/
+  # Current releases can be monitored from the official Windows/Mac downloads
   version = "0.12.112";
   srcExe = fetchurl {
     # NOTE: `?v=0.10.0` doesn't actually request a specific version. It's only being used here as a cache buster.
@@ -131,7 +139,7 @@ stdenvNoCC.mkDerivation rec {
 
       echo "Attempting to replace patterns like 'if(!VAR1 && VAR2)' with 'if(VAR1 && VAR2)' in $TARGET_FILE..."
       perl -i -pe \
-        's{if\(!(\w+)\s*&&\s*(\w+)\)}{if($1 && $2)}g' \
+        's{if\(\s*!\s*(\w+)\s*&&\s*(\w+)\s*\)}{if($1 && $2)}g' \
         "$TARGET_FILE"
 
       # Verification: Check if the original pattern structure still exists
@@ -184,7 +192,6 @@ stdenvNoCC.mkDerivation rec {
       mkdir -p $out/bin
       makeWrapper ${electron}/bin/electron $out/bin/$pname \
     --add-flags "$out/lib/$pname/app.asar" \
-    --add-flags "--openDevTools" \
     --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}" \
     --prefix PATH : ${lib.makeBinPath [ xdg-utils ]} \
     --prefix LD_LIBRARY_PATH : ${
