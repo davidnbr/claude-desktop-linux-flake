@@ -69,7 +69,7 @@
 
                                   # Ensure Claude and MCP directories exist
                                   mkdir -p "$HOME/.config/Claude"
-                                  mkdir -p "$HOME/.local/lib/python3.11/site-packages"
+                                  mkdir -p "$HOME/.local/lib/python3.13/site-packages"
 
                                   # SSL certificates for package downloads
                                   export SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
