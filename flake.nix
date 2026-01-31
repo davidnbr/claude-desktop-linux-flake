@@ -58,7 +58,7 @@
 
                                   # Create UV config file if it doesn't exist
                                   if [[ ! -f "$HOME/.config/uv/uv.toml" ]]; then
-                                    cat > "$HOME/.config/uv/uv.toml" << 'EOF'
+                                    cat > "$HOME/.config/uv/uv.toml" << EOF
                   # Use system Python instead of downloading
                   python-preference = "system"
                   python-downloads = "never"
