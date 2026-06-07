@@ -31,7 +31,7 @@
                 name = "claude-desktop";
                 targetPkgs = pkgs: [
                   basePackage
-                  pkgs.docker
+                  pkgs.docker_29
                   pkgs.glibc
                   pkgs.openssl
                   pkgs.nodejs
